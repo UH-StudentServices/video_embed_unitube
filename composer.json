@@ -1,0 +1,10 @@
+{
+  "name": "UH-StudentServices/video_embed_unitube",
+  "type": "drupal-module",
+  "description": "Use UniTube video URLs while embedding your video with Video Embed Field module.",
+  "license": "GPL-3.0+",
+  "require": {
+    "drupal/video_embed_field": "~1.5"
+  },
+  "minimum-stability": "dev"
+}
