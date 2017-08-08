@@ -3,6 +3,6 @@ type: module
 description: 'A video_embed_field integration with UniTube service by University of Helsinki.'
 package: Video Embed Field
 core: 8.x
-version: 1.0-alpha1
+version: VERSION
 dependencies:
   - video_embed_field
