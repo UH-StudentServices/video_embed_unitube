@@ -18,7 +18,7 @@ Download this release and place it to your modules directory.
 OR via composer:
 ```
 $ composer config repositories.video_embed_unitube vcs https://github.com/UH-StudentServices/video_embed_unitube
-$ composer require composer require UH-StudentServices/video_embed_unitube:^VERSION
+$ composer require UH-StudentServices/video_embed_unitube:^VERSION
 ```
 
 ## Questions
