@@ -40,26 +40,54 @@ class UniTube extends ProviderPluginBase {
   }
 
   /**
+   * Gets videos metadata.
+   * @return array|mixed
+   */
+  protected function getMetadata() {
+
+    // Perform an request to metadata and ensure we get valid response code
+    $response = $this->httpClient->request('GET', 'https://webcast.helsinki.fi/search/episode.json?id=' . $this->getVideoId());
+    if ($response->getStatusCode() != 200) {
+      return array();
+    }
+
+    // Parse JSON and get attachments
+    $parsed_response = drupal_json_decode((string) $response->getBody());
+    if (json_last_error()) {
+      return array();
+    }
+
+    return $parsed_response;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function getRemoteThumbnailUrl() {
-    // UniTube does not support remote thumbnails
+    $metadata = $this->getMetadata();
+    if (empty($metadata['result']['mediapackage']['attachments']['attachment'])) {
+      return '';
+    }
+
+    // We are looking types in certain order
+    $types = array(
+      'presentation/player+preview',
+      'presenter/player+preview',
+      'presentation/search+preview',
+      'presenter/search+preview',
+      'presentation/feed+preview',
+      'presenter/feed+preview',
+    );
+    foreach ($types as $type) {
+      foreach ($metadata['result']['mediapackage']['attachments']['attachment'] as $attachment) {
+        if (isset($attachment['mimetype']) && isset($attachment['type']) && isset($attachment['url'])) {
+          if ($attachment['type'] == $type && $attachment['mimetype'] == 'image/jpeg') {
+            return $attachment['url'];
+          }
+        }
+      }
+    }
     return '';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function downloadThumbnail() {
-    // UniTube does not support remote thumbnails
-    return NULL;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getLocalThumbnailUri() {
-    return drupal_get_path('module', 'video_embed_unitube') . '/unitube_generic_thumbnail.jpg';
   }
 
   /**
