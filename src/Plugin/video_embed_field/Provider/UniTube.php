@@ -94,7 +94,7 @@ class UniTube extends ProviderPluginBase {
    * {@inheritdoc}
    */
   public static function getIdFromInput($input) {
-    preg_match('/^https?:\/\/((www)?\.helsinki\.fi\/(en|fi|sv)|hy\.fi)\/unitube\/video\/(?<id>[a-zA-Z0-9\-]*)\/?/', $input, $matches);
+    preg_match('/^https?:\/\/((www2?)?\.helsinki\.fi\/(en|fi|sv)|hy\.fi)\/unitube\/video\/(?<id>[a-zA-Z0-9\-]*)\/?/', $input, $matches);
     return isset($matches['id']) ? $matches['id'] : FALSE;
   }
 
