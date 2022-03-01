@@ -26,7 +26,7 @@ class UniTube extends ProviderPluginBase {
       '#suffix' => '</div>',
       '#type' => 'video_embed_iframe',
       '#provider' => 'unitube',
-      '#url' => sprintf('https://webcast.helsinki.fi/unitube/embed.html?id=%s&play=false', $this->getVideoId()),
+      '#url' => sprintf('https://unitube.it.helsinki.fi/unitube/embed.html?id=%s&play=false', $this->getVideoId()),
       '#attributes' => [
         'width' => $width,
         'height' => $height,
@@ -34,7 +34,7 @@ class UniTube extends ProviderPluginBase {
         'marginheight' => '0px',
         'marginwidth' => '0px',
         'frameborder' => '0',
-        'allowfullscreen' => 'allowfullscreen',
+        'allowfullscreen' => 'true',
       ],
     ];
   }
