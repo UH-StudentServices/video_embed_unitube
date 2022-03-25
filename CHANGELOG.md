@@ -1,3 +1,6 @@
+# 8.x-2.0
+* Added support for Drupal 9 and upgraded [drupal/video_embed_field](https://www.drupal.org/project/video_embed_field) to v2
+
 # 8.x-1.0-alpha3
 * Updated embed source url to resolve cors-errors.
 
