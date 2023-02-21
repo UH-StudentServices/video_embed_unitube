@@ -28,6 +28,7 @@ class UniTube extends ProviderPluginBase {
       '#provider' => 'unitube',
       '#url' => sprintf('https://unitube.it.helsinki.fi/unitube/embed.html?id=%s&play=false', $this->getVideoId()),
       '#attributes' => [
+        'title' => $this->getName(),
         'width' => $width,
         'height' => $height,
         'scrolling' => 'no',
@@ -48,13 +49,13 @@ class UniTube extends ProviderPluginBase {
     // Perform an request to metadata and ensure we get valid response code
     $response = $this->httpClient->request('GET', 'https://webcast.helsinki.fi/search/episode.json?id=' . $this->getVideoId());
     if ($response->getStatusCode() != 200) {
-      return array();
+      return [];
     }
 
     // Parse JSON and get attachments
-    $parsed_response = drupal_json_decode((string) $response->getBody());
+    $parsed_response = json_decode((string) $response->getBody(), TRUE);
     if (json_last_error()) {
-      return array();
+      return [];
     }
 
     return $parsed_response;
@@ -70,14 +71,14 @@ class UniTube extends ProviderPluginBase {
     }
 
     // We are looking types in certain order
-    $types = array(
+    $types = [
       'presentation/player+preview',
       'presenter/player+preview',
       'presentation/search+preview',
       'presenter/search+preview',
       'presentation/feed+preview',
       'presenter/feed+preview',
-    );
+    ];
     foreach ($types as $type) {
       foreach ($metadata['result']['mediapackage']['attachments']['attachment'] as $attachment) {
         if (isset($attachment['mimetype']) && isset($attachment['type']) && isset($attachment['url'])) {
@@ -96,6 +97,18 @@ class UniTube extends ProviderPluginBase {
   public static function getIdFromInput($input) {
     preg_match('/^https?:\/\/((www2?)?\.helsinki\.fi\/(en|fi|sv)|hy\.fi)\/unitube\/video\/(?<id>[a-zA-Z0-9\-]*)\/?/', $input, $matches);
     return isset($matches['id']) ? $matches['id'] : FALSE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getName() {
+    $metadata = $this->getMetadata();
+    $title = $this->getVideoId();
+    if (isset($metadata['search-results']['result']['dcTitle'])) {
+      $title = $metadata['search-results']['result']['dcTitle'];
+    }
+    return $this->t('@provider Video (@id)', ['@provider' => $this->getPluginDefinition()['title'], '@id' => $title]);
   }
 
 }
