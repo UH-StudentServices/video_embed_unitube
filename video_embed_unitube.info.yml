@@ -1,4 +1,4 @@
-name: Video Ember UniTube
+name: Video Embed UniTube
 type: module
 description: 'A video_embed_field integration with UniTube service by University of Helsinki.'
 package: Video Embed Field
