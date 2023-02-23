@@ -104,11 +104,11 @@ class UniTube extends ProviderPluginBase {
    */
   public function getName() {
     $metadata = $this->getMetadata();
-    $title = $this->getVideoId();
     if (isset($metadata['search-results']['result']['dcTitle'])) {
       $title = $metadata['search-results']['result']['dcTitle'];
+      return $this->t('@provider Video (@id)', ['@provider' => $this->getPluginDefinition()['title'], '@id' => $title]);
     }
-    return $this->t('@provider Video (@id)', ['@provider' => $this->getPluginDefinition()['title'], '@id' => $title]);
+    return $this->t('UniTube Video');
   }
 
 }
