@@ -2,7 +2,7 @@ name: Video Embed UniTube
 type: module
 description: 'A video_embed_field integration with UniTube service by University of Helsinki.'
 package: Video Embed Field
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^8 || ^9 || ^10
 version: VERSION
 dependencies:
   - video_embed_field
