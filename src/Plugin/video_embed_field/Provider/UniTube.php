@@ -51,9 +51,7 @@ class UniTube extends ProviderPluginBase {
   protected function getMetadata() {
     try {
       // Perform an request to metadata and ensure we get valid response code
-      // $response = $this->httpClient->request('GET', 'https://webcast.helsinki.fi/search/episode.json?id=' . $this->getVideoId());
-      $response = $this->httpClient->request('https://httpstat.us/503');
-      // $response = $this->httpClient->request('GET', 'https://httpstat.us/503');
+      $response = $this->httpClient->request('GET', 'https://webcast.helsinki.fi/search/episode.json?id=' . $this->getVideoId());
       if ($response->getStatusCode() != 200) {
         return [];
       }
