@@ -21,6 +21,10 @@ class UniTube extends ProviderPluginBase {
    * {@inheritdoc}
    */
   public function renderEmbedCode($width, $height, $autoplay) {
+    $name = $this->getName();
+    if (!$name) {
+      return [];
+    }
     return [
       '#prefix' => '<div>',
       '#suffix' => '</div>',
@@ -28,7 +32,7 @@ class UniTube extends ProviderPluginBase {
       '#provider' => 'unitube',
       '#url' => sprintf('https://unitube.it.helsinki.fi/unitube/embed.html?id=%s&play=false', $this->getVideoId()),
       '#attributes' => [
-        'title' => $this->getName(),
+        'title' => $name,
         'width' => $width,
         'height' => $height,
         'scrolling' => 'no',
@@ -45,20 +49,25 @@ class UniTube extends ProviderPluginBase {
    * @return array|mixed
    */
   protected function getMetadata() {
+    try {
+      // Perform an request to metadata and ensure we get valid response code
+      $response = $this->httpClient->request('GET', 'https://webcast.helsinki.fi/search/episode.json?id=' . $this->getVideoId());
+      if ($response->getStatusCode() != 200) {
+        return [];
+      }
 
-    // Perform an request to metadata and ensure we get valid response code
-    $response = $this->httpClient->request('GET', 'https://webcast.helsinki.fi/search/episode.json?id=' . $this->getVideoId());
-    if ($response->getStatusCode() != 200) {
-      return [];
+      // Parse JSON and get attachments
+      $parsed_response = json_decode((string) $response->getBody(), TRUE);
+      if (json_last_error()) {
+        return [];
+      }
+
+      return $parsed_response;
     }
-
-    // Parse JSON and get attachments
-    $parsed_response = json_decode((string) $response->getBody(), TRUE);
-    if (json_last_error()) {
-      return [];
+    catch (\Exception $e) {
+      \Drupal::logger('video_embed_unitube')->error('There was an error downloading metadata. Message: @message.', ['@message' => $e->getMessage()]);
     }
-
-    return $parsed_response;
+    return NULL;
   }
 
   /**
@@ -104,6 +113,10 @@ class UniTube extends ProviderPluginBase {
    */
   public function getName() {
     $metadata = $this->getMetadata();
+    if (!$metadata) {
+      // In case of maintenance break.
+      return NULL;
+    }
     if (isset($metadata['search-results']['result']['dcTitle'])) {
       $title = $metadata['search-results']['result']['dcTitle'];
       return $this->t('@provider Video (@id)', ['@provider' => $this->getPluginDefinition()['title'], '@id' => $title]);
