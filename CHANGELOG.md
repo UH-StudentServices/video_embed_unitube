@@ -1,3 +1,6 @@
+# 8.x-2.2
+* Added better error handling for 50x error codes.
+
 # 8.x-2.1
 * Added title to embed for accessibility reasons.
 
